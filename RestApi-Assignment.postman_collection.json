@@ -1,0 +1,365 @@
+{
+	"info": {
+		"_postman_id": "fad6161a-4acc-4148-a039-7fdbce1a82f3",
+		"name": "RestApi-Assignment",
+		"description": "StartFragment\n\n## Authentication & User APIs\n\n### **Register User**\n\n- **POST** `/api/v1/users/register`\n    \n- Registers a new user (default role = `user`).\n    \n- **Body (JSON)**:\n    \n\n```\n{\n  \"fullName\": \"John Doe\",\n  \"username\": \"johndoe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}\n\n ```\n\n- **Response**: User object without password.\n    \n\n---\n\n### **Login User**\n\n- **POST** `/api/v1/users/login`\n    \n- Logs in a user and returns `accessToken` + `refreshToken` (cookies).\n    \n- **Body (JSON)**:\n    \n\n```\n{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}\n\n ```\n\n---\n\n### **Logout User**\n\n- **POST** `/api/v1/users/logout`\n    \n- Invalidates refresh token and clears cookies.\n    \n\n---\n\n### **Refresh Token**\n\n- **POST** `/api/v1/users/refresh-token`\n    \n- Generates new access token using refresh token (cookie).\n    \n\n---\n\n### **Get Current User**\n\n- **GET** `/api/v1/users/current-user`\n    \n- Returns profile info of the currently logged-in user.\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n\n---\n\n### **Change Password**\n\n- **PUT** `/api/v1/users/change-password`\n    \n- Allows a logged-in user to change their password.\n    \n- **Body (JSON)**:\n    \n\n```\n{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpass456\"\n}\n\n ```\n\n---\n\n## 📦 Product APIs\n\n### **Get All Products**\n\n- **GET** `/api/v1/products`\n    \n- Public – Fetch all products.\n    \n\n---\n\n### **Get Product by ID**\n\n- **GET** `/api/v1/products/:id`\n    \n- Public – Fetch product by ID.\n    \n\n---\n\n### **Create Product (Admin Only)**\n\n- **POST** `/api/v1/products`\n    \n- Requires role = `admin`.\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n- **Body (JSON)**:\n    \n\n```\n{\n  \"name\": \"Laptop\",\n  \"description\": \"A high-end laptop\",\n  \"price\": 1200.50\n}\n\n ```\n\n---\n\n### **Update Product (Admin Only)**\n\n- **PUT** `/api/v1/products/:id`\n    \n- Requires role = `admin`.\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n- **Body (JSON)**:\n    \n\n```\n{\n  \"name\": \"Laptop Pro\",\n  \"price\": 1499.99\n}\n\n ```\n\n---\n\n### **Delete Product (Admin Only)**\n\n- **DELETE** `/api/v1/products/:id`\n    \n- Requires role = `admin`.\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n\n---\n\n## ⚠️ Validation & Errors\n\n- Invalid credentials → `401 Unauthorized`\n    \n- Accessing admin routes as `user` → `403 Forbidden`\n    \n- Missing/invalid token → `401 Unauthorized`\n    \n- Invalid product data (e.g., negative price) → `400 Bad Reques`\n    \n\nEndFragment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33430945"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"exampleuser\",\r\n    \"username\" : \"example123\",\r\n    \"email\" : \"example@mail.com\",\r\n    \"password\": \"example123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users/register",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    \"email\": \"example@mail.com\",\r\n    \"password\": \"example123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server}}/users/logout",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/refresh-token",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-current-user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/current-user",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"current-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\" : \"example123\",\r\n    \"newPassword\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users/change-password",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products(public)",
+			"item": [
+				{
+					"name": "get-all-products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/products",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-product-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/products/:id",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products(admin)",
+			"item": [
+				{
+					"name": "create-product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test Product2\",\r\n    \"description\": \"A test product2\",\r\n    \"price\": 19.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/products",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/products/:id",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/products/:id",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "get-all-users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/admin/users",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-user-role",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/admin/users/:userId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/admin/users/:userId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

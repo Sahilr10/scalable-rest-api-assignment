@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { getAllUsers, updateUserRole, deleteUser } from "../controllers/user.controller.js"
+import { getAllUsers, updateUserRole, deleteUser } from "../controllers/admin.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 import { requireAdmin } from "../middlewares/role.middleware.js"
 
