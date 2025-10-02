@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"; 
@@ -139,7 +140,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             process.env.REFRESH_TOKEN_SECRET,
         )
     
-        const user = await User.findById(decodedToken?.userId)
+        const user = await User.findById(decodedToken?._id)
     
         if(!user){
             throw new ApiError(401, 'Invalid refresh token - user not found');
@@ -176,10 +177,87 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 })
 
+const changeCurrentPassword = asyncHandler(async(req, res) => {
+    const {oldPassword, newPassword} = req.body
+
+    
+
+    const user = await User.findById(req.user?._id)
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+
+    if (!isPasswordCorrect) {
+        throw new ApiError(400, "Invalid old password")
+    }
+
+    user.password = newPassword
+    await user.save({validateBeforeSave: false})
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password changed successfully"))
+})
+
+
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(new ApiResponse(200, req.user, 'User fetched successfully'))
+})
+
+// Admin functions
+const getAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find().select('-password -refreshToken');
+    return res
+    .status(200)
+    .json(new ApiResponse(200, users, 'Users fetched successfully'))
+})
+
+const updateUserRole = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { role } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new ApiError(400, "Invalid user ID");
+    }
+
+    if (!['user', 'admin'].includes(role)) {
+        throw new ApiError(400, "Invalid role");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    user.role = role;
+    await user.save();
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, 'User role updated successfully'))
+})
+
+const deleteUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new ApiError(400, "Invalid user ID");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    if (user._id.toString() === req.user._id.toString()) {
+        throw new ApiError(400, "Cannot delete yourself");
+    }
+
+    await user.deleteOne();
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'User deleted successfully'))
 })
 
 export {
@@ -187,5 +265,9 @@ export {
     loginUser,
     logoutUser,
     refreshAccessToken,
-    getCurrentUser
+    getCurrentUser,
+    changeCurrentPassword,
+    getAllUsers,
+    updateUserRole,
+    deleteUser
     };
